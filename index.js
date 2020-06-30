@@ -38,10 +38,14 @@ const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, "utf-8");
 const dataObj = JSON.parse(data);
 
 const server = http.createServer((req, res) => {
-  const Pathname = req.url;
+  // console.log(req.url);
+  // console.log(url.parse(req.url, true));
+  // const pathname = req.url;
+
+  const { query, pathname } = url.parse(req.url, true);
 
   // Overview Page
-  if (Pathname === "/" || Pathname === "/overview") {
+  if (pathname === "/" || pathname === "/overview") {
     res.writeHead(200, { "Content-type": "text/html" });
 
     const cardsHtml = dataObj
