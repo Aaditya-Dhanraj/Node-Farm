@@ -1,6 +1,6 @@
 const fs = require("fs");
-const url = require("url");
 const http = require("http");
+const url = require("url");
 
 //SERVER
 
@@ -38,27 +38,43 @@ const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, "utf-8");
 const dataObj = JSON.parse(data);
 
 const server = http.createServer((req, res) => {
-  const PathName = req.url;
+  const Pathname = req.url;
 
   // Overview Page
-  if (PathName === "/" || PathName === "overview") {
-    res.writeHead(200, { "content-type": "text/html" });
+  if (Pathname === "/" || Pathname === "/overview") {
+    res.writeHead(200, { "Content-type": "text/html" });
 
-    const CardsHtml = dataObj
+    const cardsHtml = dataObj
       .map((el) => replaceTemplate(tempCard, el))
       .join("");
-
-    const output = tempOverview.replace(`{%Product_CARDS%}`, CardsHtml);
-
+    const output = tempOverview.replace("{%PRODUCT_CARDS%}", cardsHtml);
     res.end(output);
-  }
-  //Product Page
-  if (PathName === "/product") {
-    res.writeHead(200, { "content-type": "text/html" });
-    res.end(tempProduct);
+    // Product page
+  } else if (pathname === "/product") {
+    res.writeHead(200, {
+      "Content-type": "text/html",
+    });
+    const product = dataObj[query.id];
+    const output = replaceTemplate(tempProduct, product);
+    res.end(output);
+
+    // API
+  } else if (pathname === "/api") {
+    res.writeHead(200, {
+      "Content-type": "application/json",
+    });
+    res.end(data);
+
+    // Not found
+  } else {
+    res.writeHead(404, {
+      "Content-type": "text/html",
+      "my-own-header": "hello-world",
+    });
+    res.end("<h1>Page not found!</h1>");
   }
 });
 
 server.listen(8000, "127.0.0.1", () => {
-  console.log("listning to port 8000");
+  console.log("Listening to requests on port 8000");
 });
