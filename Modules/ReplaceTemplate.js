@@ -12,3 +12,4 @@ module.exports = (temp, product) => {
     output = output.replace(/{%NOT_ORGANIC%}/g, "not-organic");
   return output;
 };
+ 
